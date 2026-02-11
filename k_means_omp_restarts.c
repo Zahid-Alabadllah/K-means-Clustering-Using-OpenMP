@@ -32,7 +32,7 @@ static int load_csv(const char *filename, int max_points)
         exit(1);
     }
 
-    char line[1024];
+    char line[4096];
     int idx = 0;
 
     while (fgets(line, sizeof(line), fp) && idx < max_points)
