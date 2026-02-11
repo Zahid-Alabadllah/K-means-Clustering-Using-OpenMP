@@ -8,6 +8,8 @@
 
 #define MAX_POINTS 1000000
 #define FEATURES 8
+#define MAX_K 10
+#define MAX_RESTARTS 1000
 #define MAX_ITER 2000
 #define DEFAULT_RESTARTS 100
 
@@ -188,8 +190,20 @@ int main(int argc, char **argv)
     const char *filename = argv[1];
     int k = atoi(argv[2]);
     int restarts = (argc >= 4) ? atoi(argv[3]) : DEFAULT_RESTARTS;
+
+    if (k <= 0 || k > MAX_K)
+    {
+        printf("Error: k must be in [1, %d]\n", MAX_K);
+        return 1;
+    }
+
     if (restarts <= 0)
         restarts = DEFAULT_RESTARTS;
+    else if (restarts > MAX_RESTARTS)
+    {
+        printf("Error: restarts must be <= %d\n", MAX_RESTARTS);
+        return 1;
+    }
 
     int n_points = load_csv(filename, MAX_POINTS);
     printf("Loaded %d points.\n", n_points);
