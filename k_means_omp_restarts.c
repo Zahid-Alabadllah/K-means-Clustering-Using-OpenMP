@@ -177,6 +177,7 @@ static void copy_centroids(float dst[10][FEATURES], float src[10][FEATURES], int
             dst[c][f] = src[c][f];
 }
 
+#ifndef TEST_MODE
 int main(int argc, char **argv)
 {
     if (argc < 3)
@@ -282,3 +283,4 @@ int main(int argc, char **argv)
 
     return 0;
 }
+#endif
