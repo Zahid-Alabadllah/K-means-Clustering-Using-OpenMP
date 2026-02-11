@@ -10,6 +10,7 @@
 #define FEATURES 8
 #define MAX_ITER 2000
 #define DEFAULT_RESTARTS 100
+#define MAX_CLUSTERS 10
 
 // Set to 1 if you want periodic prints (will slow timing experiments)
 #define VERBOSE 0
@@ -17,11 +18,11 @@
 static float data[MAX_POINTS][FEATURES];
 static int labels[MAX_POINTS];
 
-static float centroids[10][FEATURES];
-static float new_centroids[10][FEATURES];
-static int counts[10];
+static float centroids[MAX_CLUSTERS][FEATURES];
+static float new_centroids[MAX_CLUSTERS][FEATURES];
+static int counts[MAX_CLUSTERS];
 
-static float best_centroids[10][FEATURES];
+static float best_centroids[MAX_CLUSTERS][FEATURES];
 
 static int load_csv(const char *filename, int max_points)
 {
@@ -114,8 +115,8 @@ static void update_centroids_omp(int n_points, int k)
 
 #pragma omp parallel
     {
-        int local_counts[10] = {0};
-        float local_sums[10][FEATURES];
+        int local_counts[MAX_CLUSTERS] = {0};
+        float local_sums[MAX_CLUSTERS][FEATURES];
 
         for (int c = 0; c < k; c++)
             for (int f = 0; f < FEATURES; f++)
@@ -170,7 +171,7 @@ static float compute_accuracy_omp(int n_points)
     return (float)(total / (double)n_points);
 }
 
-static void copy_centroids(float dst[10][FEATURES], float src[10][FEATURES], int k)
+static void copy_centroids(float dst[MAX_CLUSTERS][FEATURES], float src[MAX_CLUSTERS][FEATURES], int k)
 {
     for (int c = 0; c < k; c++)
         for (int f = 0; f < FEATURES; f++)
@@ -187,6 +188,12 @@ int main(int argc, char **argv)
 
     const char *filename = argv[1];
     int k = atoi(argv[2]);
+    if (k <= 0 || k > MAX_CLUSTERS)
+    {
+        printf("Error: k must be in [1, %d]\n", MAX_CLUSTERS);
+        return 1;
+    }
+
     int restarts = (argc >= 4) ? atoi(argv[3]) : DEFAULT_RESTARTS;
     if (restarts <= 0)
         restarts = DEFAULT_RESTARTS;
