@@ -206,6 +206,7 @@ static void copy_centroids(float dst[MAX_K][FEATURES], float src[MAX_K][FEATURES
 // -------------------------------------------
 // Main
 // -------------------------------------------
+#ifndef ENABLE_TESTING
 int main(int argc, char **argv)
 {
     if (argc < 3)
@@ -315,3 +316,4 @@ int main(int argc, char **argv)
 
     return 0;
 }
+#endif
