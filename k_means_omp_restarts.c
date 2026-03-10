@@ -32,7 +32,7 @@ static int load_csv(const char *filename, int max_points)
     if (!fp)
     {
         perror("Error opening file");
-        exit(1);
+        return -1;
     }
 
     char line[4096];
@@ -180,6 +180,7 @@ static void copy_centroids(float dst[MAX_CLUSTERS][FEATURES], float src[MAX_CLUS
             dst[c][f] = src[c][f];
 }
 
+#ifndef UNIT_TEST
 int main(int argc, char **argv)
 {
     if (argc < 3)
@@ -213,6 +214,10 @@ int main(int argc, char **argv)
     }
 
     int n_points = load_csv(filename, MAX_POINTS);
+    if (n_points < 0)
+    {
+        exit(1);
+    }
     printf("Loaded %d points.\n", n_points);
     printf("k = %d, restarts = %d, max_iter = %d\n", k, restarts, MAX_ITER);
 
@@ -303,3 +308,4 @@ int main(int argc, char **argv)
 
     return 0;
 }
+#endif
