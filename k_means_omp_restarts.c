@@ -180,6 +180,7 @@ static void copy_centroids(float dst[MAX_CLUSTERS][FEATURES], float src[MAX_CLUS
             dst[c][f] = src[c][f];
 }
 
+#ifndef TEST_MODE
 int main(int argc, char **argv)
 {
     if (argc < 3)
@@ -303,3 +304,4 @@ int main(int argc, char **argv)
 
     return 0;
 }
+#endif
